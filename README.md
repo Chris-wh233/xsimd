@@ -19,6 +19,7 @@ vendors and compilers.
 | Workflow | Status |
 |----------------|--------|
 | android | [![GHA android](https://github.com/xtensor-stack/xsimd/actions/workflows/android.yml/badge.svg)](https://github.com/xtensor-stack/xsimd/actions/workflows/android.yml) |
+| cross-loongarch | [![GHA cross-loongarch](https://github.com/xtensor-stack/xsimd/actions/workflows/cross-loongarch.yml/badge.svg)](https://github.com/xtensor-stack/xsimd/actions/workflows/cross-loongarch.yml) |
 | cross-rvv | [![GHA cross-rvv](https://github.com/xtensor-stack/xsimd/actions/workflows/cross-rvv.yml/badge.svg)](https://github.com/xtensor-stack/xsimd/actions/workflows/cross-rvv.yml) |
 | cross-sve | [![GHA cross-sve](https://github.com/xtensor-stack/xsimd/actions/workflows/cross-sve.yml/badge.svg)](https://github.com/xtensor-stack/xsimd/actions/workflows/cross-sve.yml) |
 | cross | [![GHA cross](https://github.com/xtensor-stack/xsimd/actions/workflows/cross.yml/badge.svg)](https://github.com/xtensor-stack/xsimd/actions/workflows/cross.yml) |
