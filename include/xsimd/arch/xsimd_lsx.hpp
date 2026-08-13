@@ -462,6 +462,13 @@ namespace xsimd
         }
 
         template <class A, class T, class... Values>
+        XSIMD_INLINE batch<std::complex<T>, A> set(batch<std::complex<T>, A> const&, requires_arch<loongarch>, Values... values) noexcept
+        {
+            return batch<std::complex<T>, A>(set(batch<T, A> {}, loongarch {}, values.real()...),
+                                              set(batch<T, A> {}, loongarch {}, values.imag()...));
+        }
+
+        template <class A, class T, class... Values>
         XSIMD_INLINE batch_bool<T, A> set(batch_bool<T, A> const&, requires_arch<loongarch>, Values... values) noexcept
         {
             static_assert(sizeof...(Values) == batch_bool<T, A>::size, "consistent init");
