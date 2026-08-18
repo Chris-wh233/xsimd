@@ -13,7 +13,7 @@
 #define XSIMD_LSX_HPP
 
 #include "../types/xsimd_batch_constant.hpp"
-#include "../types/xsimd_loongarch_register.hpp"
+#include "../types/xsimd_lsx_register.hpp"
 
 #include <array>
 #include <cmath>

@@ -21,7 +21,7 @@ INPUT             = ../include/xsimd/types/xsimd_api.hpp \
                     ../include/xsimd/types/xsimd_fma3_avx2_register.hpp \
                     ../include/xsimd/types/xsimd_fma3_sse_register.hpp \
                     ../include/xsimd/types/xsimd_fma4_register.hpp \
-                    ../include/xsimd/types/xsimd_loongarch_register.hpp \
+                    ../include/xsimd/types/xsimd_lsx_register.hpp \
                     ../include/xsimd/types/xsimd_neon64_register.hpp \
                     ../include/xsimd/types/xsimd_neon_register.hpp \
                     ../include/xsimd/types/xsimd_rvv_register.hpp \
