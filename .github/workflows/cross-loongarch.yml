@@ -6,32 +6,35 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     name: 'LoongArch64 ${{ matrix.simd.name }}'
     strategy:
       fail-fast: false
       matrix:
         simd:
-          - { name: 'LSX', flags: '-mlsx' }
-          - { name: 'LASX', flags: '-mlasx' }
+          - { name: 'LSX', flags: '-mlsx -mno-lasx', lasx: 0, cpu: 'la464,lsx=on,lasx=off' }
+          - { name: 'LASX', flags: '-mlasx', lasx: 1, cpu: 'la464,lsx=on,lasx=on' }
     steps:
-    - name: Setup toolchain and QEMU
+    - name: Setup compiler
       run: |
         sudo apt-get -y -qq update
         sudo apt-get -y -qq --no-install-suggests --no-install-recommends install \
           gcc-14-loongarch64-linux-gnu \
-          g++-14-loongarch64-linux-gnu \
-          ninja-build \
-          qemu-user-static
+          g++-14-loongarch64-linux-gnu
         sudo update-alternatives --install /usr/bin/loongarch64-linux-gnu-gcc \
           loongarch64-linux-gnu-gcc /usr/bin/loongarch64-linux-gnu-gcc-14 20
         sudo update-alternatives --install /usr/bin/loongarch64-linux-gnu-g++ \
           loongarch64-linux-gnu-g++ /usr/bin/loongarch64-linux-gnu-g++-14 20
         loongarch64-linux-gnu-g++ --version
+    - name: Setup QEMU
+      run: |
+        sudo apt-get -y -qq --no-install-suggests --no-install-recommends install qemu-user-static
         qemu-loongarch64-static --version
+    - name: Setup Ninja
+      run: sudo apt-get -y -qq install ninja-build
     - name: Checkout xsimd
       uses: actions/checkout@v6
-    - name: Configure
+    - name: Setup
       run: >-
         cmake -S . -B _build
         -GNinja
@@ -51,11 +54,11 @@ jobs:
         echo "XSIMD_TEST_CPU_ASSUME_SVE=0" >> "$GITHUB_ENV"
         echo "XSIMD_TEST_CPU_ASSUME_RVV=0" >> "$GITHUB_ENV"
         echo "XSIMD_TEST_CPU_ASSUME_LSX=1" >> "$GITHUB_ENV"
-        echo "XSIMD_TEST_CPU_ASSUME_LASX=1" >> "$GITHUB_ENV"
+        echo "XSIMD_TEST_CPU_ASSUME_LASX=${{ matrix.simd.lasx }}" >> "$GITHUB_ENV"
         echo "XSIMD_TEST_CPU_ASSUME_VSX=0" >> "$GITHUB_ENV"
         echo "XSIMD_TEST_CPU_ASSUME_VXE=0" >> "$GITHUB_ENV"
         echo "XSIMD_TEST_CPU_ASSUME_MANUFACTURER=unknown" >> "$GITHUB_ENV"
-    - name: Test
-      timeout-minutes: 30
-      run: qemu-loongarch64-static -L /usr/loongarch64-linux-gnu ./test/test_xsimd
+    - name: Testing xsimd
+      timeout-minutes: 15
+      run: qemu-loongarch64-static -cpu '${{ matrix.simd.cpu }}' -L /usr/loongarch64-linux-gnu ./test/test_xsimd
       working-directory: ${{ github.workspace }}/_build

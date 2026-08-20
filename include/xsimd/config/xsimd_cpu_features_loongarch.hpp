@@ -16,10 +16,11 @@
 #include "./xsimd_getauxval.hpp"
 
 #if XSIMD_TARGET_LOONGARCH64 && XSIMD_HAVE_LINUX_GETAUXVAL
-// HWCAP masks are architecture-specific and asm/hwcap.h is not available
-// for every target.
+// HWCAP_XXX masks to use on getauxval results.
+// Header does not exist on all architectures and masks are architecture
+// specific.
 #include <asm/hwcap.h>
-#endif
+#endif // XSIMD_TARGET_LOONGARCH64 && XSIMD_HAVE_LINUX_GETAUXVAL
 
 namespace xsimd
 {
