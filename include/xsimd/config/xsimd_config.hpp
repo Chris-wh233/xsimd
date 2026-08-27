@@ -528,7 +528,7 @@
  *
  * Set to 1 if the 128-bit Loongson SIMD Extension is available.
  */
-#if XSIMD_TARGET_LOONGARCH64 && (defined(__loongarch_sx) || defined(__loongarch_asx))
+#if XSIMD_TARGET_LOONGARCH64 && defined(__loongarch_sx)
 #define XSIMD_WITH_LSX 1
 #else
 #define XSIMD_WITH_LSX 0

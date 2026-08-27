@@ -15,9 +15,6 @@
 #include "./xsimd_config.hpp"
 #include "./xsimd_getauxval.hpp"
 
-#include <cstddef>
-#include <cstdint>
-
 #if XSIMD_TARGET_LOONGARCH64 && XSIMD_HAVE_LINUX_GETAUXVAL
 // HWCAP_XXX masks to use on getauxval results.
 // Header does not exists on all architectures and masks are architecture
@@ -56,16 +53,9 @@ namespace xsimd
         // Possibly missing on older Linux distributions
         constexpr unsigned long loongarch_hwcap_lsx = 1ul << 4;
 #endif
-#ifdef HWCAP_LOONGARCH_LASX
-        constexpr unsigned long loongarch_hwcap_lasx = HWCAP_LOONGARCH_LASX;
+        return hwcap().has_feature(loongarch_hwcap_lsx);
 #else
-        // Possibly missing on older Linux distributions
-        constexpr unsigned long loongarch_hwcap_lasx = 1ul << 5;
-#endif
-        return hwcap().has_feature(loongarch_hwcap_lsx)
-            || hwcap().has_feature(loongarch_hwcap_lasx);
-#else
-        return XSIMD_WITH_LSX || XSIMD_WITH_LASX;
+        return XSIMD_WITH_LSX;
 #endif
     }
 
