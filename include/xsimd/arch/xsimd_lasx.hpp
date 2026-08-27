@@ -15,6 +15,7 @@
 #include "../types/xsimd_batch_constant.hpp"
 #include "../types/xsimd_lasx_register.hpp"
 #include "../types/xsimd_utils.hpp"
+#include "../utils/bits.hpp"
 
 #include <complex>
 #include <cstddef>
@@ -142,16 +143,13 @@ namespace xsimd
         }
 
         // abs
-        template <class A>
-        XSIMD_INLINE batch<float, A> abs(batch<float, A> const& self, requires_arch<lasx>) noexcept
+        template <class A, class T, class = std::enable_if_t<std::is_floating_point_v<T>>>
+        XSIMD_INLINE batch<T, A> abs(batch<T, A> const& self, requires_arch<lasx>) noexcept
         {
-            return detail::lasx_from_int<float, A>(__lasx_xvbitclri_w(detail::lasx_to_int(self), 31));
-        }
-
-        template <class A>
-        XSIMD_INLINE batch<double, A> abs(batch<double, A> const& self, requires_arch<lasx>) noexcept
-        {
-            return detail::lasx_from_int<double, A>(__lasx_xvbitclri_d(detail::lasx_to_int(self), 63));
+            if constexpr (sizeof(T) == 4)
+                return detail::lasx_from_int<T, A>(__lasx_xvbitclri_w(detail::lasx_to_int(self), 8 * sizeof(T) - 1));
+            else
+                return detail::lasx_from_int<T, A>(__lasx_xvbitclri_d(detail::lasx_to_int(self), 8 * sizeof(T) - 1));
         }
 
         // add
@@ -184,7 +182,7 @@ namespace xsimd
         template <class A, class T>
         XSIMD_INLINE bool all(batch_bool<T, A> const& self, requires_arch<lasx>) noexcept
         {
-            constexpr std::uint64_t all_bits = (std::uint64_t(1) << batch_bool<T, A>::size) - 1;
+            constexpr std::uint64_t all_bits = utils::make_low_mask(static_cast<std::uint64_t>(batch_bool<T, A>::size));
             return detail::lasx_mask<T>(self.data) == all_bits;
         }
 
